@@ -39,5 +39,5 @@ steps:
     commands: |
       az acr login --name instadockersregistry;
       docker pull instadockersregistry.azurecr.io/instaviajes-frontend:latest;
-      docker run -it --rm -p 80:80 instadockersregistry.azurecr.io/instaviajes-frontend;
+      docker run -p 80:80 instadockersregistry.azurecr.io/instaviajes-frontend;
     readyTimeout: '20000'
