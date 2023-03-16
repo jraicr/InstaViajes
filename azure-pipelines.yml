@@ -32,4 +32,12 @@ steps:
     command: 'buildAndPush'
     Dockerfile: 'dockers/frontend/production_deploy/Dockerfile'
     buildContext: '$(Build.Repository.LocalPath)'
-    tags: 'latest'
+- task: SSH@0
+  inputs:
+    sshEndpoint: 'InstaviajesDocker'
+    runOptions: 'commands'
+    commands: |
+      az acr login --name instadockersregistry;
+      docker pull instadockersregistry.azurecr.io/instaviajes-frontend:latest;
+      docker run -it --rm -p 80:80 instadockersregistry.azurecr.io/instaviajes-frontend;
+    readyTimeout: '20000'
