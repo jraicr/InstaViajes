@@ -28,8 +28,8 @@ steps:
   displayName: 'Build and push Docker Image'
   inputs:
     containerRegistry: 'Insta-Dockers Registry service connection'
-    repository: 'images'
+    repository: 'instaviajes-frontend'
     command: 'buildAndPush'
     Dockerfile: 'dockers/frontend/production_deploy/Dockerfile'
     buildContext: '$(Build.Repository.LocalPath)'
-    tags: 'instaviajes-frontend:latest'
+    tags: 'latest'
