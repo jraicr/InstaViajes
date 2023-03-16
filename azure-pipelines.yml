@@ -32,3 +32,4 @@ steps:
     command: 'buildAndPush'
     Dockerfile: 'dockers/frontend/production_deploy/Dockerfile'
     buildContext: '$(Build.Repository.LocalPath)'
+    tags: 'latest'
