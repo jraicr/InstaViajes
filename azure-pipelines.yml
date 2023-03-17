@@ -9,19 +9,26 @@ pool:
 # NPM install dependencias de Javascript
 steps:
 - task: Npm@1
-  displayName: '[Frontend] npm install'
+  displayName: '[Frontend] Instala dependencias NPM'
   inputs:
     workingDir: 'InstaViajes_frontend'
     verbose: false
 
 # Compilación de la aplicación Javascript  
 - task: Npm@1
-  displayName: '[Frontend] npm run build'
+  displayName: '[Frontend] Compila la aplicación vite'
   inputs:
     command: custom
     workingDir: 'InstaViajes_frontend'
     verbose: false
     customCommand: 'run build'
+
+- task: DownloadSecureFile@1
+  inputs:
+    secureFile: 'instaviajes_laravel_env_file'
+
+- script: cp -f $(instaviajes_laravel_env_file.secureFilePath) InstaViajes_backend/.env
+  displayName: '[Backend] Copia archivo .env de Laravel'
 
 # Hace build y push de la imagen docker al registro de Dockers privado
 - task: Docker@2
@@ -32,13 +39,6 @@ steps:
     command: 'buildAndPush'
     Dockerfile: 'dockers/frontend/production_deploy/Dockerfile'
     buildContext: '$(Build.Repository.LocalPath)'
-
-- task: DownloadSecureFile@1
-  inputs:
-    secureFile: 'instaviajes_laravel_env_file'
-
-- script: cp-f $(instaviajes_laravel_env_file.secureFilePath) InstaViajes_backend/.env
-  displayName: '[Backend] Copia archivo .env'
 
 - task: Docker@2
   displayName: '[Backend] Build and push Docker Image'
