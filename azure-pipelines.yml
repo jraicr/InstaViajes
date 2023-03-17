@@ -9,14 +9,14 @@ pool:
 # NPM install dependencias de Javascript
 steps:
 - task: Npm@1
-  displayName: 'npm install'
+  displayName: '[Frontend] npm install'
   inputs:
     workingDir: 'InstaViajes_frontend'
     verbose: false
 
 # Compilación de la aplicación Javascript  
 - task: Npm@1
-  displayName: 'npm run build'
+  displayName: '[Frontend] npm run build'
   inputs:
     command: custom
     workingDir: 'InstaViajes_frontend'
@@ -25,13 +25,30 @@ steps:
 
 # Hace build y push de la imagen docker al registro de Dockers privado
 - task: Docker@2
-  displayName: 'Build and push Docker Image'
+  displayName: '[Frontend] Build and push Docker Image'
   inputs:
     containerRegistry: 'Insta-Dockers Registry service connection'
     repository: 'instaviajes-frontend'
     command: 'buildAndPush'
     Dockerfile: 'dockers/frontend/production_deploy/Dockerfile'
     buildContext: '$(Build.Repository.LocalPath)'
+
+- task: DownloadSecureFile@1
+  inputs:
+    secureFile: 'instaviajes_laravel_env_file'
+
+- script: cp-f $(instaviajes_laravel_env_file.secureFilePath) InstaViajes_backend/.env
+  displayName: '[Backend] Copia archivo .env'
+
+- task: Docker@2
+  displayName: '[Backend] Build and push Docker Image'
+  inputs:
+    containerRegistry: 'Insta-Dockers Registry service connection'
+    repository: 'instaviajes-backend'
+    command: 'buildAndPush'
+    Dockerfile: 'dockers/backend/production_deploy/Dockerfile'
+    buildContext: '$(Build.Repository.LocalPath)'
+
 - task: SSH@0
   inputs:
     sshEndpoint: 'InstaviajesDocker'
@@ -39,7 +56,12 @@ steps:
     commands: |
       az acr login --name instadockersregistry;
       docker stop instaviajes-frontend;
+      docker stop instaviajes-backend;
       docker rm instaviajes-frontend;
+      docker rm instaviajes-backend;
       docker pull instadockersregistry.azurecr.io/instaviajes-frontend:latest;
+      docker pull instadockersregistry.azurecr.io/instaviajes-backend:latest;
       docker run --name instaviajes-frontend -d -p 80:80 instadockersregistry.azurecr.io/instaviajes-frontend
+      docker run --name instaviajes-backend -d -p 3000:80 instadockersregistry.azurecr.io/instaviajes-backend
+
     readyTimeout: '20000'
