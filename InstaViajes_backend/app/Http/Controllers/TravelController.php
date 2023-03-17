@@ -33,23 +33,26 @@ class TravelController extends Controller
             $participantes = TravelTravelUsers::all()->where('travel_id', "=", $travel['id'])->count();
             // Nombre de usuario creador
             $userName = User::all()->where('id', "=", $travel['user_id'])->value('name');
-            // Imagen viaje
-            $fotoTravel = Imageable::all()->where('imageable_id', '=', $travel['id'])->where('imageable_type', '=', 'Travel')->value('image_id');
-            if ($fotoTravel) { // Evita errores
-                $fotoTravel = Image::find($fotoTravel)->value("name");
-            }
-            // Imagen user
-            $fotoUser = Imageable::all()->where('imageable_id', '=', $travel['user_id'])->where('imageable_type', '=', 'User')->value('image_id');
-            if ($fotoUser) { // Evita errores
-                $fotoUser = Image::find($fotoUser)->value("name");
-            }
+            // // Imagen viaje
+            // $fotoTravel = Imageable::all()->where('imageable_id', '=', $travel['id'])->where('imageable_type', '=', 'Travel')->value('image_id');
+            // if ($fotoTravel) { // Evita errores
+            //     $fotoTravel = Image::find($fotoTravel)->value("name");
+            // }
+            // // Imagen user
+            // $fotoUser = Imageable::all()->where('imageable_id', '=', $travel['user_id'])->where('imageable_type', '=', 'User')->value('image_id');
+            // if ($fotoUser) { // Evita errores
+            //     $fotoUser = Image::find($fotoUser)->value("name");
+            // }
+            // Imagen aleatoria
+            $randomImage = DB::table('images')->inRandomOrder()->first();
+            $randomImageName = ($randomImage) ? $randomImage->name : '';
 
             return [
                 'id' => $travel['id'],
                 'user_id' => $travel['user_id'],
                 'username' => $userName,
-                'image' => asset('images/' . $fotoTravel),
-                'imageuser' => asset('images/' . $fotoUser),
+                'image' => asset('api/images/' . $randomImageName),
+                'imageuser' => asset('api/images/' . $randomImageName),
                 'travel_state_id' => $travel['travel_states_id'],
                 'description' => $travel['description'],
                 'start_date' => $travel['start_date'],
@@ -84,7 +87,11 @@ class TravelController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $travelId = $request->id;
+        $travelUserId = $request->user_id;
+        $travel = Travel::create($request->all());
+        $travelUser = TravelUsers::create(['user_id' => $travelUserId]);
+        $travelTravelUser = TravelTravelUsers::create(['travel_id' => $travel->id, 'travel_user_id' => $travelUserId]);
     }
 
     /**
@@ -114,7 +121,7 @@ class TravelController extends Controller
             ];
             array_push($acti, $activiti);
         }
-        
+
 
         // Imprimir los campos renombrados
         return response()->json([
@@ -131,17 +138,39 @@ class TravelController extends Controller
      */
     public function edit(Travel $travel)
     {
-        echo $travel;
+        $friends = [];
+        $friendsValueNames = ['id', 'name', 'mail', 'image'];
+        foreach ($travel->user->friendships as $friend) {
+            return $friend->user;
+            $auxFriend = [
+                'id' => $friend->user->id,
+                'name' => $friend->user->name,
+                'mail' => $friend->user->mail,
+                'image' => $friend->user->images
+            ];
+            array_push($friends, $auxFriend);
+        }
 
-        $travelName = $travel->name;
-        $travelStartDate = $travel->start_date;
-        $travelEndDate = $travel->end_date;
-        $travelOrigin = $travel->origin;
-        $travelDestiny = $travel->destiny;
-        $travelDescription = $travel->description;
-        $travelBudget = $travel->budget;
-        $travelState = $travel->travelStates->name;
-        $travelFriends = $travel->user->friendship;
+        $jsonObject = [
+
+            'trip' => [
+                'name' => $travel->name,
+                'date' => $travel->start_date,
+                'dateEnd' => $travel->end_date,
+                'origin' => $travel->origin,
+                'destination' => $travel->destiny,
+                'description' => $travel->description,
+                'budget' => $travel->budget,
+                'estado' => $travel->state,
+                'friendsOnTrip' => [
+                    'id' => $travel->id,
+                    'image' => $travel->images
+                ]
+            ],
+
+            'friends' => $auxFriend
+        ];
+        return response()->json($jsonObject);
     }
 
     /**

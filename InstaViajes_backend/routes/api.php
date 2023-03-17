@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TravelController;
+use App\Http\Controllers\ImageController;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,7 +43,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //User and friends
     Route::get('/profile/users', 'App\Http\Controllers\UserController@index');
     Route::get('/profile/{id}', 'App\Http\Controllers\UserController@friends');
-    //Manager friends requests
+    //Manage friends requests
     Route::put('/friendship/accept', 'App\Http\Controllers\FriendshipController@update');
     Route::delete('/friendship/delete', 'App\Http\Controllers\FriendshipController@destroy');
     Route::post('/friendship/add', 'App\Http\Controllers\FriendshipController@create');
@@ -51,10 +54,26 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // datos del perfil de usuario
     Route::post('/perfil/{user}/update', 'App\Http\Controllers\UserController@update');
     
+    // Edición de viaje
+    Route::get('/misviajes/{travel}/editar', 'App\Http\Controllers\TravelController@edit');
+    // Creación de viaje
+    Route::post('/misviajes/crear', 'App\Http\Controllers\TravelController@store');
+
     Route::post('/verify', [AuthController::class, 'verify']);
 });
 
-
+//Images
+Route::get('images/{filename}', function ($filename) {
+    $path = storage_path('app/public/images/' . $filename);
+    if (!File::exists($path)) {
+        abort(404);
+    }
+    $file = File::get($path);
+    $type = File::mimeType($path);
+    $response = response($file, 200);
+    $response->header("Content-Type", $type);
+    return $response;
+})->where('filename', '.*');
 
 
 // Edición de viaje
