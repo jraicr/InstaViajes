@@ -91,16 +91,26 @@ function checkVoidInputAndSaveValues() {
         status = 1;
     }
     else {
+        
         spanErrorDuration.innerHTML = '';
         let durationValue = (document.getElementById('inputDuration').value.split('Horas'))[0];
         durationValue = durationValue.slice(0, -1);
         
-        currentActivity.duration = durationValue;
+        if(!isNaN(durationValue)) {
+            spanErrorDuration.innerHTML = '';
+            currentActivity.duration = durationValue;
+
+        }
+        else {
+            let spanErrorDuration = document.getElementById('spanErrorDuration');
+            spanErrorDuration.innerHTML = 'DEBE ASIGNAR UN VALOR NÚMERICO';
+            status = 1;
+        }
         
     }
 
     //validacion de que el precio introducido es un string de tipo numerico mediante el metodo isNan
-    let priceValue = (document.getElementById('inputPrice').value).split('$')[0];
+    let priceValue = (document.getElementById('inputPrice').value).split('€')[0];
     if(isNaN(priceValue)) {
         let spanErrorPrice = document.getElementById('spanErrorPrice');
         spanErrorPrice.innerHTML = 'Debe introducir datos númericos';

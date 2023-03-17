@@ -1,5 +1,6 @@
 //Importamos la clase RegisterUser a la que le pasamos datos de usuario de prueba
-import {RegisterUser} from "./registerUser.js";
+import { baseUrl } from "../../config.js";
+import { RegisterUser } from "./registerUser.js";
 
 export function render() {
     //Elemento body del DOM
@@ -97,7 +98,7 @@ export function render() {
     body.appendChild(fatherDiv);
 
     //crear objeto de tipo RegisterUser con los datos del formulario
-    form.addEventListener("submit", (e)=>{
+    form.addEventListener("submit", (e) => {
         e.preventDefault();
         let newUser = new RegisterUser();
 
@@ -107,14 +108,48 @@ export function render() {
 
             error.appendChild(errorText);
             form.appendChild(error);
-        }else{
+        } else {
 
             newUser.user = user.value;
             newUser.mail = mail.value;
             newUser.password = password.value;
             newUser.repeatPassword = repeatPassword.value;
 
-            console.log(newUser)
+            // Define the URL of the API that will receive the friend request
+            /* const apiUrl = baseUrl+"register"; */
+            const apiUrl = baseUrl+"api/register";
 
-        }})
+            // Defines the data object to be sent to the server
+            const requestData = {
+                name: user.value,
+                email: mail.value,
+                password: password.value
+
+            };
+            // Define the application options
+            const requestOptions = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestData)
+            };
+
+            // Sends the request to the server using fetch
+            fetch(apiUrl, requestOptions)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Error al enviar la solicitud");
+                    }
+                    console.log("Solicitud enviada con éxito");
+                    console.log(response);
+                    onNavigate("/login");
+                })
+                .catch(error => {
+
+                    console.log(error);
+                });
+        }
+    })
 }
+

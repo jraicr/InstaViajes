@@ -1,4 +1,5 @@
 //importamos la clase userRegistered que tiene datos de prueba
+import { baseUrl } from "../../config";
 import { UserRegistered } from "./userRegistered";
 
 export function render() {
@@ -66,7 +67,7 @@ export function render() {
     //--------
 
     let rememberPassword = document.createElement("a");
-    let rememberPasswordText = document.createTextNode("¿Has olvidado la contraseña?")
+    let rememberPasswordText = document.createTextNode("")
     let rememberPasswordSalto = document.createElement("br");
 
     rememberPassword.appendChild(rememberPasswordText);
@@ -95,14 +96,39 @@ export function render() {
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
-        let loggedUser = new UserRegistered();
 
-        if (loggedUser.user !== user.value) {
-            console.log("Usuario Incorrecto")
-        } else if (loggedUser.password !== password.value) {
-            console.log("Contraseña Incorrecta")
-        } else {
-            console.log("Usuario logueado")
-        }
+        // Define the URL of the API that will receive the friend request
+        const apiUrl = baseUrl+"api/login";
+
+        // Defines the data object to be sent to the server
+        const requestData = {
+            name: user.value,
+            password: password.value
+        };
+        // Define the application options
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(requestData)
+        };
+        // Sends the request to the server using fetch
+        fetch(apiUrl, requestOptions)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Error al enviar la solicitud");
+                }
+                console.log("Solicitud enviada con éxito");
+                return response.json();
+            })
+            .then(data => {
+                localStorage.setItem("auth_token", data.access_token);
+                onNavigate("/home");
+            })
+            .catch(error => {
+                console.log(error);
+            });
     })
+
 }

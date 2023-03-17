@@ -1,113 +1,77 @@
 
-import Fetch from 'fetch-simulator';
-Fetch.use();
+// import fetchSim from 'fetch-simulator';
+// fetchSim.use();
 
-fetch.addRoute('https://somekindofserver.com/travel/2', {
-    get: {
-        response: [{
-            trip: {
-                title: "Viaje a Madrid",
-                participants: ["Diego", "Aram", "Jorge", "Carmen"],
-                owner: "Diego",
-                state: "En curso",
-                budget: 2000.54,
-                posts:[
-                    {
-                        id:1,
-                        img: "https://media.traveler.es/photos/62fe1ebd47832420e24c36d8/16:9/w_2580,c_limit/SurItalia_Positano1-Global.jpg",
-                        text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry.", 
-                    },
-                    {
-                        id:2,
-                        img: "https://media.traveler.es/photos/62fe1ebd47832420e24c36d8/16:9/w_2580,c_limit/SurItalia_Positano1-Global.jpg",
-                        text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.", 
-                    },
-                    {
-                        id:3,
-                        img: "https://media.traveler.es/photos/62fe1ebd47832420e24c36d8/16:9/w_2580,c_limit/SurItalia_Positano1-Global.jpg",
-                        text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.", 
-                    },
-                    {
-                        id:4,
-                        img: "https://media.traveler.es/photos/62fe1ebd47832420e24c36d8/16:9/w_2580,c_limit/SurItalia_Positano1-Global.jpg",
-                        text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's .", 
-                    },
-                ],
-                days: [
-                    {
-                        date: "Día 23/03/2023",
-                        activities: [
-                            {
-                                id: 1,
-                                title: "Visita al museo de cera.",
-                                budget: 255.45,
-                                type: "Museo",
-                                votes: 15,
-                                image: "https://ep01.epimg.net/verne/imagenes/2015/03/05/articulo/1425549987_841133_1425571033_noticia_normal.jpg",
-                                description: "Visita guiada al museo del prado de Madrid.",
-                                duration: "2 horas"
-                            },
-                            {
-                                id: 2,
-                                title: "Visita al parque del retiro.",
-                                budget: 24,
-                                type: "Monumentos públicos",
-                                votes: 10,
-                                image: "https://madridando.com/wp-content/uploads/2018/07/el-retiro.jpeg",
-                                description: "Vuelta de reconocimiento a la plaza de españa.",
-                                duration: "1 horas"
-                            }
-                        ]
-                    },
-                    {
-                        date: "Día 27/03/2023",
-                        activities: [
-                            {
-                                id: 1,
-                                title: "5g4g4g4g4g4",
-                                budget: 2556.45,
-                                type: "Musg45g45eo",
-                                votes: 15,
-                                image: "https://ep01.epimg.net/verne/imagenes/2015/03/05/articulo/1425549987_841133_1425571033_noticia_normal.jpg",
-                                description: "Visita guiada al museo del prado de Madrid.",
-                                duration: "2 horas"
-                            },
-                            {
-                                id: 2,
-                                title: "Visita4h4h4hrg4 del retiro.",
-                                budget: 244,
-                                type: "Monumentos públicos",
-                                votes: 10,
-                                image: "https://madridando.com/wp-content/uploads/2018/07/el-retiro.jpeg",
-                                description: "Vuelta de reconocimiento a la plaza de españa.",
-                                duration: "1 horas"
-                            }
-                        ]
-                    },
-                ]
-            }
-        }]
-    }
-});
+import { baseUrl } from "../../config";
 
+// fetchSim.addRoute('https://somekindofserver.com/travel/2', {
+//     get: {
+//         response: [{
+//             trip: {
+//                 title: "Viaje a Madrid",
+//                 participants: ["Diego", "Aram", "Jorge", "Carmen"],
+//                 state: "En curso",
+//                 budget: 2000.54,
+//                 days: [
+//                     {
+//                         date: "Día 23/03/2023",
+//                         activities: [
+//                             {
+//                                 id: 1,
+//                                 title: "Visita al museo de cera.",
+//                                 budget: 255.45,
+//                                 type: "Museo",
+//                                 votes: 15,
+//                                 image: "https://ep01.epimg.net/verne/imagenes/2015/03/05/articulo/1425549987_841133_1425571033_noticia_normal.jpg",
+//                                 description: "Visita guiada al museo del prado de Madrid.",
+//                                 duration: "2 horas"
+//                             },
+//                             {
+//                                 id: 2,
+//                                 title: "Visita al parque del retiro.",
+//                                 budget: 24,
+//                                 type: "Monumentos públicos",
+//                                 votes: 10,
+//                                 image: "https://madridando.com/wp-content/uploads/2018/07/el-retiro.jpeg",
+//                                 description: "Vuelta de reconocimiento a la plaza de españa.",
+//                                 duration: "1 horas"
+//                             }
+//                         ]
+//                     }
+//                 ]
+//             }
+//         }]
+//     }
+// });
+let id_viaje = 3;
+let url = baseUrl + "api/viajes/3";
 
 export function renderHeader() {
     const container = document.querySelector("#detallesviaje");
-
-    fetch("https://somekindofserver.com/travel/2")
+    const token = localStorage.getItem("auth_token");
+    const requestOptions = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+        },
+    };
+    // Sends the request to the server using fetch
+    fetch(url, requestOptions)
         .then(response => response.json())
         .then(data => {
+            console.log(data);
             const headerContainer = document.createElement('div'); // Nuevo contenedor para el encabezado
             const container_title = document.createElement('h1'); //? Titulo para el Viaje.
             const container_participants = document.createElement('h3'); //? Sub-titulo para los nombres de los participantes del viaje.
             const container_budget = document.createElement('h3'); //? Sub-titulo para el presupuesto del viaje.
             const container_state = document.createElement('h4'); //? Titulo pequeño para el estado del viaje.
             const container_owner = document.createElement('h5'); //? dueño del viaje.
-            container_title.innerText = data[0].trip.title;
-            container_participants.innerText = "Participantes: " + data[0].trip.participants;
-            container_budget.innerText = "Presupuesto: " + data[0].trip.budget + "€";
-            container_state.innerText = "Estado: " + data[0].trip.state;
-            container_owner.innerText = "Dueño: " + data[0].trip.owner;
+            container_title.innerText = data.title;
+            container_participants.innerText = "Participantes: " + data.participants[0];
+            container_budget.innerText = "Presupuesto: " + data.budget + "€";
+            container_state.innerText = "Estado: " + data.state;
+            // container_owner.innerText = "Dueño: " + data[0].trip.owner;
             headerContainer.appendChild(container_title);
             headerContainer.appendChild(container_state);
             container.appendChild(headerContainer);
@@ -118,6 +82,9 @@ export function renderHeader() {
             container_title.classList.add('mr-4'); // Agregar margen derecho para separar el título del estado
             // principalDiv.appendChild(container);
         })
+        .catch(error => {
+            console.log(error);
+        });
 }
 
 
@@ -130,6 +97,7 @@ export function renderButtonTravel() {
     editButtonTravel.classList.add("boton-secundario");
     editButtonTravel.addEventListener("click", () => {
         //!Aquí irá la lógica para ir a la vista de editar día
+        document.location.href = "/editarviaje";
     });
     const deleteButtonTravel = document.createElement("button");
     deleteButtonTravel.innerText = "Borrar Viaje";
@@ -143,6 +111,7 @@ export function renderButtonTravel() {
     createButtonActivity.classList.add("boton-principal");
     createButtonActivity.addEventListener("click", () => {
         //!Aquí irá la lógica para ir a la vista de agregar actividad.
+        document.location.href = "/crearactividades";
     });
     // Agregamos los botones de borrar, editar un viaje al contenedor principal y añadir actividad.
     buttonsTravelDiv.appendChild(editButtonTravel);
@@ -156,13 +125,21 @@ const prueba = document.createElement("div");
 export function renderDivCarousel() {
     const carouselDiv = document.querySelector("#carruselitinerario");
     let isFirstItem = true;
-    fetch("https://somekindofserver.com/travel/2")
+    const token = localStorage.getItem("auth_token");
+    const requestOptions = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+        },
+    };
+    fetch(url, requestOptions)
         .then(response => response.json())
         .then(data => {
-            data[0].trip.days.forEach((day, index) => {
+            data.days.forEach((day, index) => {
                 const dayItem = document.createElement("div"); //? Contenedor para almacenar los datos de cada día de un viaje.
                 dayItem.classList.add("day-item");
-                dayItem.innerHTML = `<h2>${day.date}</h2>`;
+                dayItem.innerHTML = `<h2>${day.title}</h2>`;
                 dayItem.dataset.index = index;
 
                 carouselDiv.appendChild(dayItem); //? Agregar al contendor padre del HTML cada contenedor (día) que tiene el viaje.
@@ -176,17 +153,17 @@ export function renderDivCarousel() {
                 activitiesDiv.innerText = `ACTIVIDADES: `;
                 dayItem.appendChild(activitiesDiv);
                 const activityList = document.createElement("ul"); //? Lista para almacenar actividades.
-                day.activities.forEach(activity => {
+               
                     const activityItem = document.createElement("li");
 
                     //Parte de los votos
                     const voteButton = document.createElement("span");
                     const voteCount = document.createElement("span");
                     voteButton.innerHTML = '<i class="far fa-heart"></i>';
-                    voteCount.innerText = `${activity.votes}`;
+                    voteCount.innerText = `${day.votes}`;
 
                     activityList.style.listStyleType = "none";
-                    activityItem.innerText = `${activity.title} (${activity.type})`;
+                    activityItem.innerText = `${day.title} (${day.type})`;
                     const deleteButton = document.createElement("button");
                     deleteButton.innerText = "Borrar";
                     deleteButton.classList.add("boton-cancelar");
@@ -198,15 +175,24 @@ export function renderDivCarousel() {
                     editButton.classList.add("boton-secundario");
                     editButton.addEventListener("click", () => {
                         //! Aquí se implementaría la lógica para ir a la vista de editar actividad.
+                        document.location.href = "/editaractividades";
                     });
 
                     voteButton.addEventListener("click", () => {
-                        fetch("https://somekindofserver.com/travel/2")
+                        const token = localStorage.getItem("auth_token");
+                        const requestOptions = {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": "Bearer " + token,
+                            },
+                        };
+                        fetch(url, requestOptions)
                             .then(response => response.json())
                             .then(data => {
                                 // si la solicitud se realiza con éxito, actualizar el número de votos y desactivar el botón
                                 for (let i = 0; i < data.length; i++) {
-                                    voteCount.innerText = `${(data[i].trip.days[i].activities[i].votes)+1}`;
+                                    voteCount.innerText = `${(data[i].days[i].votes) + 1}`;
                                     voteCount.innerText = "¡Has votado!";
                                 }
                                 voteButton.disabled = true;
@@ -225,17 +211,17 @@ export function renderDivCarousel() {
                     activityItem.appendChild(voteCount);
 
                     activitiesDiv.appendChild(activityList);
-                });
+                
                 // principalDiv.appendChild(carouselDiv);
             });
 
 
             function handleDayClick(event) {
                 const dayItem = event.target.closest(".day-item"); //? Buscar elemento más cercano con la clase ".day-item". Almacenarlo en una constante.
-                if (dayItem && event.target.tagName !== "BUTTON" && event.target.tagName !== "SPAN"  && event.target.tagName !== "I") {
+                if (dayItem && event.target.tagName !== "BUTTON" && event.target.tagName !== "SPAN" && event.target.tagName !== "I") {
                     //! Obtener el día seleccionado y sus datos asociados a través del índice del elemento HTML seleccionado.
                     const dayIndex = dayItem.dataset.index;
-                    const day = data[0].trip.days[dayIndex];
+                    const day = data.days[dayIndex];
                     renderItinerary(day);
                 }
             }
@@ -260,15 +246,15 @@ function renderItinerary(day) {
     const itineraryListDiv = document.querySelector("#itinerarylist");
     borrarNodo(itineraryListDiv); // borra el contenido anterior del itinerario
     const itineraryTitleDiv = document.createElement("div");
-    itineraryTitleDiv.innerHTML = `<h3>ITINERARIO: ${day.date}</h3>`;
+    itineraryTitleDiv.innerHTML = `<h3>ITINERARIO: ${day.title}</h3>`;
     itineraryListDiv.appendChild(itineraryTitleDiv);
     const activityList = document.createElement("ul");
-    day.activities.forEach(activity => {
+  
         const activityItem = document.createElement("li");
         activityList.style.listStyleType = "none";
-        activityItem.innerHTML = `<h4>${activity.title} - ${activity.budget}€</h4><p>${activity.description}</p><p>Duración: ${activity.duration}</p>`;
+        activityItem.innerHTML = `<h4>${day.title} - ${day.budget}€</h4><p>${day.description}</p><p>Duración: ${day.duration} minutos</p>`;
         activityList.appendChild(activityItem);
-    });
+    
     itineraryListDiv.appendChild(activityList);
 }
 
@@ -279,8 +265,8 @@ function borrarNodo(nodo) {
             nodo.removeChild(nodo.firstChild);
         }
     }
-  }
-  
+}
+
 //Función que renderiza los post que crea el usuario
 export function renderPost() {
     const travelPostsDiv = document.querySelector("#postsViaje");
@@ -295,37 +281,46 @@ export function renderPost() {
 
     const addPostCardDiv = document.createElement("div");
     addPostCardDiv.className = "misviajes mb-5 mt-5 ms-5";
-    
+
     addPostButton.appendChild(postButtonText);
     addPostButtonDiv.appendChild(addPostButton);
     travelPostsDiv.appendChild(addPostButtonDiv);
 
-    fetch("https://somekindofserver.com/travel/2")
-    .then(response => response.json())
-    .then(data => {
-        let posts = data[0].trip.posts;
+    const token = localStorage.getItem("auth_token");
+    const requestOptions = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+        },
+    };
 
-        posts.forEach(element => {
-            let card = document.createElement("div");
-            card.className = "cajaSombra cajatarjeta";
+    fetch(url, requestOptions)
+        .then(response => response.json())
+        .then(data => {
+            let posts = data.posts;
 
-            let imgDiv = document.createElement("div");
-            let img = document.createElement("img");
-            img.src = element.img; 
-            imgDiv.appendChild(img);
+            posts.forEach(element => {
+                let card = document.createElement("div");
+                card.className = "cajaSombra cajatarjeta";
 
-            let dataDiv = document.createElement("div");
-            dataDiv.className = "divdatos";
-            let textElement = document.createElement("p");
-            let text = document.createTextNode(element.text);
-            textElement.appendChild(text);
-            dataDiv.appendChild(textElement);
+                let imgDiv = document.createElement("div");
+                let img = document.createElement("img");
+                img.src = element.img;
+                imgDiv.appendChild(img);
 
-            card.appendChild(imgDiv);
-            card.appendChild(dataDiv);
+                let dataDiv = document.createElement("div");
+                dataDiv.className = "divdatos";
+                let textElement = document.createElement("p");
+                let text = document.createTextNode(element.text);
+                textElement.appendChild(text);
+                dataDiv.appendChild(textElement);
 
-            addPostCardDiv.appendChild(card);
-            travelPostsDiv.appendChild(addPostCardDiv);
-        });
-    })   
+                card.appendChild(imgDiv);
+                card.appendChild(dataDiv);
+
+                addPostCardDiv.appendChild(card);
+                travelPostsDiv.appendChild(addPostCardDiv);
+            });
+        })
 }

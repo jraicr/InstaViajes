@@ -1,115 +1,140 @@
 
-import Fetch from 'fetch-simulator';
-Fetch.use();
+// import fetchSim from 'fetch-simulator';
+// fetchSim.use();
 
-// Viajes de otros usuarios de la plataforma
-fetch.addRoute('https://somekindofserver.com/travelsRandom', {
-    get: {
-        response: [{
+import { baseUrl } from "../../config";
 
-            location: 'Grecia',
-            image: 'https://concepto.de/wp-content/uploads/2019/05/cultura-griega-acropolis-e1559077275552-800x400.jpg',
-            imageuser: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png',
-            username: 'Aram Hernandez',
-            days: 8,
-            NumUsers: 4,
+// // Viajes de otros usuarios de la plataforma
+// fetchSim.addRoute('https://somekindofserver.com/travelsRandom', {
+//     get: {
+//         response: [{
 
-        },
-        {
+//             location: 'Grecia',
+//             image: 'https://concepto.de/wp-content/uploads/2019/05/cultura-griega-acropolis-e1559077275552-800x400.jpg',
+//             imageuser: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png',
+//             username: 'Aram Hernandez',
+//             days: 8,
+//             NumUsers: 4,
 
-            location: 'Italia',
-            image: 'https://www.surfingtheplanet.com/wp-content/uploads/2017/08/plaza-navona-roma-italia-800x400.jpg',
-            imageuser: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png',
-            username: 'Carmen',
-            days: 4,
-            NumUsers: 2,
-        },
-        {
+//         },
+//         {
 
-            location: 'Berlin',
-            image: 'https://humanidades.com/wp-content/uploads/2018/09/Berlin-min-e1536096458165.jpg',
-            imageuser: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png',
-            username: 'Diego',
-            days: 3,
-            NumUsers: 8,
-        }
-        ]
-    }
-});
+//             location: 'Italia',
+//             image: 'https://www.surfingtheplanet.com/wp-content/uploads/2017/08/plaza-navona-roma-italia-800x400.jpg',
+//             imageuser: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png',
+//             username: 'Carmen',
+//             days: 4,
+//             NumUsers: 2,
+//         },
+//         {
+
+//             location: 'Berlin',
+//             image: 'https://humanidades.com/wp-content/uploads/2018/09/Berlin-min-e1536096458165.jpg',
+//             imageuser: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png',
+//             username: 'Diego',
+//             days: 3,
+//             NumUsers: 8,
+//         }
+//         ]
+//     }
+// });
 
 
 // Viajes de mis amigos
-fetch.addRoute('https://somekindofserver.com/user/friends/travels', {
-    get: {
-        response: [{
+// fetchSim.addRoute('https://somekindofserver.com/user/friends/travels', {
+//     get: {
+//         response: [{
 
-            location: 'Grecia',
-            image: 'https://concepto.de/wp-content/uploads/2019/05/cultura-griega-acropolis-e1559077275552-800x400.jpg',
-            imageuser: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png',
-            username: 'Aram Hernandez',
-            days: 8,
-            NumUsers: 4,
+//             location: 'Grecia',
+//             image: 'https://concepto.de/wp-content/uploads/2019/05/cultura-griega-acropolis-e1559077275552-800x400.jpg',
+//             imageuser: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png',
+//             username: 'Aram Hernandez',
+//             days: 8,
+//             NumUsers: 4,
 
-        },
-        {
+//         },
+//         {
 
-            location: 'Italia',
-            image: 'https://www.surfingtheplanet.com/wp-content/uploads/2017/08/plaza-navona-roma-italia-800x400.jpg',
-            imageuser: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png',
-            username: 'Carmen',
-            days: 4,
-            NumUsers: 2,
-        },
-        {
+//             location: 'Italia',
+//             image: 'https://www.surfingtheplanet.com/wp-content/uploads/2017/08/plaza-navona-roma-italia-800x400.jpg',
+//             imageuser: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png',
+//             username: 'Carmen',
+//             days: 4,
+//             NumUsers: 2,
+//         },
+//         {
 
-            location: 'Berlin',
-            image: 'https://humanidades.com/wp-content/uploads/2018/09/Berlin-min-e1536096458165.jpg',
-            imageuser: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png',
-            username: 'Diego',
-            days: 3,
-            NumUsers: 8,
-        }
-        ]
-    }
-});
-
+//             location: 'Berlin',
+//             image: 'https://humanidades.com/wp-content/uploads/2018/09/Berlin-min-e1536096458165.jpg',
+//             imageuser: 'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png',
+//             username: 'Diego',
+//             days: 3,
+//             NumUsers: 8,
+//         }
+//         ]
+//     }
+// });
 
 // Función principal que crea el contenido de la página
+
+
+
 export async function renderIndex() {
     const container = document.querySelector('#todosviajeshome')
-
 
     const datos = await fetchDatos();
     Creartarjetas(datos);
 
     async function fetchDatos() {
-        const response = await fetch('https://somekindofserver.com/user/friends/travels');
-        console.log(response);
-        return await response.json();
+        const token = localStorage.getItem("auth_token");
+        const apiUrl = baseUrl+"api/viajes";
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            }
+        };
+        try {
+            const response = await fetch(apiUrl, requestOptions);
+            if (!response.ok) {
+                throw new Error("Error al enviar la solicitud");
+            }
+            console.log(response);
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.log(error);
+        }
     }
+    
 
     function Creartarjetas(datos) {
         datos.forEach(element => {
+            let linkDetallesViaje = document.createElement("a");
+            linkDetallesViaje.setAttribute("href", "/detallesviaje");
+            
+            console.log(element);
             const tarjeta = document.createElement('div');
-            tarjeta.setAttribute("class","tarjetaviaje");
+            tarjeta.setAttribute("class", "tarjetaviaje");
 
             const divInsideCard = document.createElement('div');
-            divInsideCard.setAttribute('class','infoViaje');
+            divInsideCard.setAttribute('class', 'infoViaje');
 
             const divInsideCard2 = document.createElement('div');
             const divInsideCard3 = document.createElement('div');
             const divInsideCard4 = document.createElement('div');
 
-            divInsideCard2.setAttribute('class','cajablancauno');
-            divInsideCard3.setAttribute('class','cajablancados');
+            divInsideCard2.setAttribute('class', 'cajablancauno');
+            divInsideCard3.setAttribute('class', 'cajablancados');
 
             const image = document.createElement('img');
             image.setAttribute('src', element.image);
-            image.setAttribute('class','imgViaje');
+            image.setAttribute('class', 'imgViaje');
 
             const imageuser = document.createElement('img')
             imageuser.setAttribute('src', element.imageuser);
-            imageuser.setAttribute('class','imageuser');
+            imageuser.setAttribute('class', 'imageuser');
 
             const location = document.createElement('h3');
             location.textContent = element.location;
@@ -123,10 +148,11 @@ export async function renderIndex() {
             const NumDay = document.createElement('span')
             NumDay.textContent = element.days + 'dias';
 
-            container.appendChild(tarjeta);
+            linkDetallesViaje.appendChild(tarjeta);
+            container.appendChild(linkDetallesViaje);
             tarjeta.appendChild(image);
             divInsideCard.appendChild(divInsideCard2);
-            divInsideCard.appendChild(divInsideCard3); 
+            divInsideCard.appendChild(divInsideCard3);
             tarjeta.appendChild(divInsideCard);
             divInsideCard2.appendChild(location);
             divInsideCard2.appendChild(divInsideCard4);
