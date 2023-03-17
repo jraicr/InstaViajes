@@ -56,9 +56,7 @@ steps:
     commands: |
       az acr login --name instadockersregistry;
       docker stop instaviajes-frontend;
-      docker stop instaviajes-backend;
       docker rm instaviajes-frontend;
-      docker rm instaviajes-backend;
       docker pull instadockersregistry.azurecr.io/instaviajes-frontend:latest;
       docker pull instadockersregistry.azurecr.io/instaviajes-backend:latest;
       docker run --name instaviajes-frontend -d -p 80:80 instadockersregistry.azurecr.io/instaviajes-frontend
