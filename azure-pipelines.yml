@@ -31,16 +31,6 @@ steps:
 - script: cp -f $(env_file.secureFilePath) InstaViajes_backend/.env
   displayName: '[Backend] Copia archivo .env de Laravel'
 
-# Hace build y push de la imagen docker al registro de Dockers privado
-- task: Docker@2
-  displayName: '[Frontend] Build and push Docker Image'
-  inputs:
-    containerRegistry: 'Insta-Dockers Registry service connection'
-    repository: 'instaviajes-frontend'
-    command: 'buildAndPush'
-    Dockerfile: 'dockers/frontend/production_deploy/Dockerfile'
-    buildContext: '$(Build.Repository.LocalPath)'
-
 - task: Docker@2
   displayName: '[Backend] Build and push Docker Image'
   inputs:
@@ -48,6 +38,15 @@ steps:
     repository: 'instaviajes-backend'
     command: 'buildAndPush'
     Dockerfile: 'dockers/backend/production_deploy/Dockerfile'
+    buildContext: '$(Build.Repository.LocalPath)'
+
+- task: Docker@2
+  displayName: '[Frontend] Build and push Docker Image'
+  inputs:
+    containerRegistry: 'Insta-Dockers Registry service connection'
+    repository: 'instaviajes-frontend'
+    command: 'buildAndPush'
+    Dockerfile: 'dockers/frontend/production_deploy/Dockerfile'
     buildContext: '$(Build.Repository.LocalPath)'
 
 - task: SSH@0
