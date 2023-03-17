@@ -57,7 +57,7 @@ RUN composer install --no-interaction --optimize-autoloader --no-dev
 RUN php artisan storage:link
 
 # Ejecuta migraciones y seeders
-RUN php artisan migrate --seed --force
+RUN php artisan migrate:fresh --seed --force
 
 # Optimizar configuración 
 RUN php artisan config:cache
