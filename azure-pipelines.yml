@@ -57,7 +57,7 @@ steps:
       az acr login --name instadockersregistry;
       docker pull instadockersregistry.azurecr.io/instaviajes-frontend:$(Build.BuildId);
       docker pull instadockersregistry.azurecr.io/instaviajes-backend:$(Build.BuildId);
-      docker run --name instaviajes-frontend -d -p 80:80 instadockersregistry.azurecr.io/instaviajes-frontend
-      docker run --name instaviajes-backend -d -p 3000:80 instadockersregistry.azurecr.io/instaviajes-backend
+      docker run --name instaviajes-frontend -d -p 80:80 instadockersregistry.azurecr.io/instaviajes-frontend:$(Build.BuildId);
+      docker run --name instaviajes-backend -d -p 3000:80 instadockersregistry.azurecr.io/instaviajes-backend:$(Build.BuildId);
 
     readyTimeout: '20000'
