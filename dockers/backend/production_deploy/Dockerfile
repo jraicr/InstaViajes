@@ -53,6 +53,9 @@ COPY InstaViajes_backend/ .
 
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
+# Ejecuta migraciones y seeders
+RUN php artisan migrate --seed --force
+
 # Optimizar configuración 
 RUN php artisan config:cache
 
