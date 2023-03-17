@@ -6,7 +6,7 @@ LABEL org.label-schema.schema-version="1.0"
 LABEL org.label-schema.name="php-xdebug-composer"
 LABEL org.label-schema.description="Image from php:fpm-alpine with Xdebug, Composer and PHP Extensions requeriments for default Laravel project."
 
-ARG CACHEBUST=1
+# ARG CACHEBUST=1
 
 RUN apk --no-cache update && apk --no-cache upgrade
 
