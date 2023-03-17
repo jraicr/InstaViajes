@@ -26,7 +26,7 @@ steps:
 - task: DownloadSecureFile@1
   name: env_file
   inputs:
-    secureFile: 'instaviajes_laravel_env_file'
+    secureFile: 'instaviajes_laravel_env_file_v2'
 
 - script: cp -f $(env_file.secureFilePath) InstaViajes_backend/.env
   displayName: '[Backend] Copia archivo .env de Laravel'
