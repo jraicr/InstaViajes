@@ -1,1 +1,1 @@
-export let baseUrl ="http://localhost/";
+export let baseUrl ="http://instaviajes.westeurope.cloudapp.azure.com:3000/api/";
