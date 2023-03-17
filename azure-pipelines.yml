@@ -24,10 +24,11 @@ steps:
     customCommand: 'run build'
 
 - task: DownloadSecureFile@1
+  name: env_file
   inputs:
     secureFile: 'instaviajes_laravel_env_file'
 
-- script: cp -f $(instaviajes_laravel_env_file.secureFilePath) InstaViajes_backend/.env
+- script: cp -f $(env_file.secureFilePath) InstaViajes_backend/.env
   displayName: '[Backend] Copia archivo .env de Laravel'
 
 # Hace build y push de la imagen docker al registro de Dockers privado
