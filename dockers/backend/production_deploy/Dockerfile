@@ -53,6 +53,9 @@ COPY InstaViajes_backend/ .
 
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 
+# Crea enlace simbolico a storage
+RUN php artisan storage:link
+
 # Ejecuta migraciones y seeders
 RUN php artisan migrate --seed --force
 
